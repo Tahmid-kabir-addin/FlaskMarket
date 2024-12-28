@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "cssbuild": "tailwindcss -i ./static/css/output-style.css -o ./static/css/style.css --watch"
+  },
   "dependencies": {
     "tailwindcss": "^3.4.17"
   }
