@@ -6,5 +6,6 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 @app.route("/") # decorator: a function that wraps another function and adds some additional functionality
+@app.route("/home")
 def hello_world():
     return render_template("home.html")
