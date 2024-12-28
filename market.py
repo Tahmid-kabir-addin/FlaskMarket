@@ -2,8 +2,25 @@
 # run the app by flask run
 
 from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///market.db'
+db = SQLAlchemy(app)
+
+with app.app_context():
+    db.create_all()
+
+class Item(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(length=30), nullable=False, unique=True)
+    price = db.Column(db.Integer, nullable=False)
+    barcode = db.Column(db.String(length=12), nullable=False, unique=True)
+    description = db.Column(db.String(length=1024), nullable=False, unique=True)
+    rating = db.Column(db.Float, nullable=False, default=0.0)
+
+    def __repr__(self):
+        return f"Item {self.name}"
 
 @app.route("/") # decorator: a function that wraps another function and adds some additional functionality
 @app.route("/home")
@@ -12,8 +29,6 @@ def home():
 
 @app.route("/market")
 def market():
-    items = [{"id": 1, "name": "ChatGpt 4.0", "price": 20, "description": "ChatGpt 4.0 is a new chatbot that can answer any question you have.", "barcode": "1234567890", "rating": 4.5},
-             {"id": 2, "name": "Claude 3.5", "price": 10, "description": "Claude 3.5 is a new chatbot that can answer any question you have.", "barcode": "1234567890", "rating": 4.7},
-             {"id": 3, "name": "Gemini 1.5", "price": 30, "description": "Gemini 1.5 is a new chatbot that can answer any question you have.", "barcode": "1234567890", "rating": 4.2}]
+    items = Item.query.all()
     return render_template("market.html", items=items)
 
